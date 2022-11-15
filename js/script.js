@@ -17,7 +17,6 @@ function init() {
         }
     });
 
-    // Отображение разных карт
     let search_input = document.querySelector('.search-container__input');
     let dropdown = document.querySelector('.search-container__dropdown');
 
@@ -29,17 +28,10 @@ function init() {
         }
     });
 
-    // Отображение маршрутов на разных картах
-    // Отображение разных маршрутов на разных картах
-    // Задаём точки мультимаршрута.
     let point49 = [51.30770390, 37.88526904],
         point28 = [51.31329631, 37.89193673],
         point11 = [51.31124501, 37.88767123],
         school = [51.30819533, 37.87967864],
-        /**
-         * Создаем мультимаршрут.
-         * @see https://api.yandex.ru/maps/doc/jsapi/2.1/ref/reference/multiRouter.MultiRoute.xml
-         */
         routeFrom49 = new ymaps.multiRouter.MultiRoute({
             referencePoints: [
                 point49,
@@ -47,12 +39,10 @@ function init() {
                 school
             ],
             params: {
-                //Тип маршрутизации - пешеходная маршрутизация.
                 routingMode: 'pedestrian',
                 viaPoints: [1]
             }
         }, {
-            // Автоматически устанавливать границы карты так, чтобы маршрут был виден целиком.
             boundsAutoApply: true
         }),
         routeFrom28 = new ymaps.multiRouter.MultiRoute({
@@ -62,12 +52,10 @@ function init() {
             school
         ],
         params: {
-            //Тип маршрутизации - пешеходная маршрутизация.
             routingMode: 'pedestrian',
             viaPoints: [1]
         }
     }, {
-        // Автоматически устанавливать границы карты так, чтобы маршрут был виден целиком.
         boundsAutoApply: true
     }),
         routeFrom11 = new ymaps.multiRouter.MultiRoute({
@@ -77,16 +65,13 @@ function init() {
             school
         ],
         params: {
-            //Тип маршрутизации - пешеходная маршрутизация.
             routingMode: 'pedestrian',
             viaPoints: [1]
         }
     }, {
-        // Автоматически устанавливать границы карты так, чтобы маршрут был виден целиком.
         boundsAutoApply: true
     });
 
-    // Создаем кнопку.
     let changePointsButton = new ymaps.control.Button({
         data: {
             content: "Поменять местами точки А и В"
@@ -96,7 +81,6 @@ function init() {
         }
     });
 
-    // Объявляем обработчики для кнопки.
     changePointsButton.events.add('select', function () {
         routeFrom49.model.setReferencePoints([school, point49]);
     });
@@ -119,7 +103,6 @@ function init() {
         routeFrom11.model.setReferencePoints([point11, school]);
     });
 
-    // Загрузка и отображение разных карт
     let empty = new ymaps.Map(document.getElementsByClassName('map')[0], {
         center: [51.30819533, 37.87967864],
         zoom: 18,
@@ -155,8 +138,6 @@ function init() {
 
     let y_maps = [empty, map49, map28, map11]
 
-    // Сравним положение, вычисленное по ip пользователя и
-    // положение, вычисленное средствами браузера.
     let geolocation = ymaps.geolocation;
 
     for (let i = 0; i < y_maps.length; i++) {
@@ -164,7 +145,6 @@ function init() {
             provider: 'yandex',
             mapStateAutoApply: true
         }).then(function (result) {
-            // Красным цветом пометим положение, вычисленное через ip.
             result.geoObjects.options.set('preset', 'islands#redCircleIcon');
             result.geoObjects.get(0).properties.set({
                 balloonContentBody: 'Мое местоположение'
@@ -176,8 +156,6 @@ function init() {
             provider: 'browser',
             mapStateAutoApply: true
         }).then(function (result) {
-            // Синим цветом пометим положение, полученное через браузер.
-            // Если браузер не поддерживает эту функциональность, метка не будет добавлена на карту.
             result.geoObjects.options.set('preset', 'islands#blueCircleIcon');
             y_maps[i].geoObjects.add(result.geoObjects);
         });
